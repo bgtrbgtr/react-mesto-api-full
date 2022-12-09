@@ -1,0 +1,10 @@
+.popup__image-caption {
+  margin: 0;
+  margin-top: 10px;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.21;
+  position: absolute;
+  top: 100%;
+  left: 0;
+}
