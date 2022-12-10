@@ -8,13 +8,16 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errorHandler');
-const { routes } = require('./routes');
+const routes = require('./routes');
 
 const { PORT = 3001 } = process.env;
 const app = express();
 
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: [
+    'http://localhost:3000',
+    'http://lackluster-party.students.nomoredomains.club',
+  ],
   allowedHeaders: ['Content-Type'],
   credentials: true,
 }));
