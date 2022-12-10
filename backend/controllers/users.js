@@ -125,11 +125,20 @@ module.exports.login = (req, res, next) => {
           httpOnly: true,
           sameSite: true,
         })
+        .cookie('auth', '1', {
+          maxAge: 3600000 * 24 * 7,
+          httpOnly: false,
+          sameSite: true,
+        })
         .send({ message: 'Авторизация успешна.' });
     })
     .catch((err) => {
       next(err);
     });
+};
+
+module.exports.logout = (req, res) => {
+  res.clearCookie('jwt').clearCookie('auth').send({ message: 'Успешный выход из учетной записи.' });
 };
 
 module.exports.getUserInfo = (req, res, next) => {

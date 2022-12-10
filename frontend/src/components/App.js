@@ -35,52 +35,44 @@ function App() {
   const history = useHistory();
 
   useEffect(() => {
-    checkToken();
+    checkAuthorization();
   }, []);
 
-  useEffect(() => {
-    api
-      .getCards()
-      .then((cards) => {
-        setCards(cards);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, []);
-
-  useEffect(() => {
-    api
-      .getUserInfo()
-      .then((data) => {
-        setCurrentUser(data);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-  }, []);
-
-  function checkToken() {
-    const jwt = localStorage.getItem("jwt");
-    if (jwt) {
-      auth.getContent(jwt).then((res) => {
-        setLoggedIn(true);
-        history.push("/");
-        setUserEmail(res.data.email);
-      });
+  function checkAuthorization () {
+    const authCookie = document.cookie;
+    if(authCookie) {
+      auth
+        .getContent()
+        .then((res) => {
+          setCurrentUser(res);
+          setUserEmail(res.email);
+        })
+        .then(() => {
+          api
+            .getCards()
+            .then((cards) => {
+              setCards(cards);
+            })
+            .catch((e) => {
+              console.log(e);
+            })
+        })
+        .then(() => {
+          setLoggedIn(true);
+          history.push("/");
+        })
     } else {
       setLoggedIn(false);
     }
-  }
+  };
 
-  const handleLogin = ({ password, email }) => {
+  const handleLogin = ({ email, password }) => {
     auth
-      .authorize(password, email)
+      .authorize(email, password)
       .then((data) => {
-        if (data.token) {
-          localStorage.setItem("jwt", data.token);
+        if (data) {
           setLoggedIn(true);
-          checkToken();
+          checkAuthorization();
         }
       })
       .catch((e) => {
@@ -90,6 +82,18 @@ function App() {
         console.log(e);
       });
   };
+
+  const handleLogout = () => {
+    auth
+      .logOut()
+      .then(() => {
+        setLoggedIn(false);
+        history.push('/sign-in');
+      })
+      .catch((e) => {
+        console.log(e);
+      })
+  }
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -147,7 +151,7 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id);
+    const isLiked = card.likes.some((i) => i === currentUser._id);
     api
       .likeCard(card._id, isLiked)
       .then((newCard) => {
@@ -187,9 +191,9 @@ function App() {
       });
   }
 
-  function handleRegFormSubmit({ password, email }) {
+  function handleRegFormSubmit({ email, password }) {
     auth
-      .register(password, email)
+      .register(email, password)
       .then(() => {
         setTitle("Вы успешно зарегистрировались!");
         setIsRegPopupOpen(true);
@@ -230,13 +234,17 @@ function App() {
     <AppContext.Provider
       value={{
         handleLogin: handleLogin,
+        handleLogout: handleLogout,
         loggedIn: loggedIn,
         handleRegistration: handleRegFormSubmit,
       }}
     >
       <CurrentUserContext.Provider value={currentUser}>
         <div className="page">
-          <Header userEmail={userEmail} />
+          <Header 
+            userEmail={userEmail}
+            handleLogout={handleLogout}
+           />
           <Switch>
             <Route exact path="/">
               <>

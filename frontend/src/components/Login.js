@@ -16,7 +16,7 @@ export default function Login() {
       onSubmit={(e) => {
         e.preventDefault();
 
-        context.handleLogin({ password, email });
+        context.handleLogin({ email, password });
         setValues({});
       }}
     >

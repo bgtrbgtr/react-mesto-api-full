@@ -1,11 +1,12 @@
 import logoPath from "../images/logo.svg";
+import { AppContext } from "../contexts/AppContext";
 import { Route, Switch, Link } from "react-router-dom";
+import { useContext } from "react";
 
 export default function Header(userEmail) {
-  function handleLogOut() {
-    localStorage.removeItem("jwt");
-  }
-
+  
+  const context = useContext(AppContext);
+  
   return (
     <header className="header">
       <img src={logoPath} alt="Логотип Mesto" className="header__logo" />
@@ -17,7 +18,7 @@ export default function Header(userEmail) {
           <Link
             to={"/sign-in"}
             className="header__button"
-            onClick={handleLogOut}
+            onClick={context.handleLogout}
             style={{ color: "#A9A9A9" }}
           >
             Выйти

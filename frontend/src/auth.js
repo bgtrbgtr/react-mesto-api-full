@@ -1,12 +1,12 @@
-export const BASE_URL = "https://auth.nomoreparties.co";
+export const BASE_URL = "http://localhost:3001";
 
-const request = ({ url, method = "POST", token, data }) => {
+const request = ({ url, method = "POST", data }) => {
   return fetch(`${BASE_URL}${url}`, {
     method,
     headers: {
       "Content-Type": "application/json",
-      ...(!!token && { Authorization: `Bearer ${token}` }),
     },
+    credentials: 'include',
     ...(!!data && { body: JSON.stringify(data) }),
   }).then((res) => {
     if (!res.ok) return Promise.reject(res.status);
@@ -15,14 +15,18 @@ const request = ({ url, method = "POST", token, data }) => {
   });
 };
 
-export const register = (password, email) => {
-  return request({ url: "/signup", data: { password, email } });
+export const register = (email, password) => {
+  return request({ url: "/signup", data: { email, password } });
 };
 
-export const authorize = (password, email) => {
-  return request({ url: "/signin", data: { password, email } });
+export const authorize = (email, password) => {
+  return request({ url: "/signin", data: { email, password } });
 };
 
-export const getContent = (jwt) => {
-  return request({ url: "/users/me", method: "GET", token: jwt });
+export const getContent = () => {
+  return request({ url: "/users/me", method: "GET" });
+};
+
+export const logOut = () => {
+  return request({ url: "/logout", method: "GET" });
 };

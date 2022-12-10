@@ -28,7 +28,7 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.getCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.send(cards))
+    .then((cards) => res.send(cards.reverse()))
     .catch(next);
 };
 
@@ -38,7 +38,7 @@ module.exports.deleteCard = (req, res, next) => {
       throw new NotFoundError('Карточка с указанным id не найдена.');
     })
     .then((card) => {
-      if (card.owner.equals(req.user._id)) {
+      if (!card.owner.equals(req.user._id)) {
         throw new ForbiddenError('Удаление карточки другого пользователя невозможно.');
       } else {
         return card;
@@ -66,7 +66,7 @@ module.exports.deleteCard = (req, res, next) => {
 module.exports.addLike = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $addToSet: { likes: req.params.cardId.likes } },
+    { $addToSet: { likes: req.user._id } },
     { new: true },
   )
     .orFail(() => {

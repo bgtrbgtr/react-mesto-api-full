@@ -18,7 +18,7 @@ export const Register = () => {
         onSubmit={(e) => {
           e.preventDefault();
 
-          context.handleRegistration({ password, email });
+          context.handleRegistration({ email, password });
           setValues({});
         }}
       >

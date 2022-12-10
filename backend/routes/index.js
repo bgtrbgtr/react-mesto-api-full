@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
-const { login, createUser } = require('../controllers/users');
+const { login, logout, createUser } = require('../controllers/users');
 const REGEX_FOR_LINK = require('../constants/regexp');
 const userRouter = require('./users');
 const cardRouter = require('./cards');
@@ -22,6 +22,8 @@ router.post('/signin', celebrate({
     password: Joi.string().required(),
   }),
 }), login);
+
+router.get('/logout', logout);
 
 router.use(auth);
 router.use('/users', userRouter);
