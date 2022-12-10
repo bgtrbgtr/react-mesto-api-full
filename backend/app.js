@@ -8,6 +8,7 @@ const cookieParser = require('cookie-parser');
 const path = require('path');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const errorHandler = require('./middlewares/errorHandler');
+const { routes } = require('./routes');
 
 const { PORT = 3001 } = process.env;
 const app = express();
@@ -23,7 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use(requestLogger);
 app.use(cookieParser());
-app.use('/api', require('./routes'));
+app.use(routes);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(errorLogger);
