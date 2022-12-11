@@ -1,4 +1,4 @@
-export const BASE_URL = "http://lackluster-party.students.nomoredomains.club/api";
+export const BASE_URL = "http://api.lackluster.students.nomoredomains.club";
 
 const request = ({ url, method = "POST", data }) => {
   return fetch(`${BASE_URL}${url}`, {
