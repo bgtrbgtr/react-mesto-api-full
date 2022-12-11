@@ -104,7 +104,7 @@ class Api {
 }
 
 export const api = new Api({
-  baseUrl: "http://api.lackluster-party.students.nomoredomains.club",
+  baseUrl: "http://localhost:3001",
   headers: {
     "Content-Type": "application/json",
   },

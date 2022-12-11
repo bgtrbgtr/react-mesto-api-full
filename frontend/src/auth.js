@@ -1,4 +1,4 @@
-export const BASE_URL = "http://api.lackluster.students.nomoredomains.club";
+export const BASE_URL = "http://localhost:3001";
 
 const request = ({ url, method = "POST", data }) => {
   return fetch(`${BASE_URL}${url}`, {
@@ -7,13 +7,14 @@ const request = ({ url, method = "POST", data }) => {
       "Content-Type": "application/json",
     },
     credentials: 'include',
-    ...(!!data && { body: JSON.stringify(data) }),
-  }).then((res) => {
+    ...(!!data && { body: JSON.stringify(data) })
+  })
+  .then((res) => {
     if (!res.ok) return Promise.reject(res.status);
 
     return res.json();
   });
-};
+}
 
 export const register = (email, password) => {
   return request({ url: "/signup", data: { email, password } });
