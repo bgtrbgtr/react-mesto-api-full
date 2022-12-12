@@ -1,12 +1,12 @@
-export const BASE_URL = "http://localhost:3001";
+export const BASE_URL = "https://api.lackluster.students.nomoredomains.club";
 
-const request = ({ url, method = "POST", data }) => {
+const request = ({ url, method = "POST", token, data }) => {
   return fetch(`${BASE_URL}${url}`, {
     method,
     headers: {
       "Content-Type": "application/json",
+      ...(!!token && { Authorization: `Bearer ${token}` }),
     },
-    credentials: 'include',
     ...(!!data && { body: JSON.stringify(data) })
   })
   .then((res) => {
@@ -24,10 +24,6 @@ export const authorize = (email, password) => {
   return request({ url: "/signin", data: { email, password } });
 };
 
-export const getContent = () => {
-  return request({ url: "/users/me", method: "GET" });
-};
-
-export const logOut = () => {
-  return request({ url: "/logout", method: "GET" });
+export const getContent = (jwt) => {
+  return request({ url: "/users/me", method: "GET", token: jwt });
 };

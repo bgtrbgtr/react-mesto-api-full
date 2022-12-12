@@ -4,6 +4,9 @@ import { Route, Switch, Link } from "react-router-dom";
 import { useContext } from "react";
 
 export default function Header(userEmail) {
+  function handleLogout() {
+    localStorage.removeItem("jwt");
+  }
   
   const context = useContext(AppContext);
   
@@ -18,7 +21,7 @@ export default function Header(userEmail) {
           <Link
             to={"/sign-in"}
             className="header__button"
-            onClick={context.handleLogout}
+            onClick={handleLogout}
             style={{ color: "#A9A9A9" }}
           >
             Выйти

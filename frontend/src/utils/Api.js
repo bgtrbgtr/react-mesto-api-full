@@ -19,7 +19,6 @@ class Api {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "GET",
       headers: this._headers,
-      credentials: 'include',
     }).then(this._getResponseData);
   }
 
@@ -27,7 +26,6 @@ class Api {
     return fetch(`${this._baseUrl}/cards`, {
       method: "GET",
       headers: this._headers,
-      credentials: 'include',
     })
       .then(this._getResponseData)
       .then((data) => {
@@ -43,7 +41,6 @@ class Api {
         name: name,
         about: about,
       }),
-      credentials: 'include',
     }).then(this._getResponseData);
   }
 
@@ -55,7 +52,6 @@ class Api {
         name: name,
         link: link,
       }),
-      credentials: 'include',
     }).then(this._getResponseData);
   }
 
@@ -63,7 +59,6 @@ class Api {
     return fetch(`${this._baseUrl}/cards/${cardId}`, {
       method: "DELETE",
       headers: this._headers,
-      credentials: 'include',
     }).then(this._getResponseData);
   }
 
@@ -72,7 +67,6 @@ class Api {
       return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
         method: "PUT",
         headers: this._headers,
-        credentials: 'include',
       })
         .then(this._getResponseData)
         .then((data) => {
@@ -82,7 +76,6 @@ class Api {
       return fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
         method: "DELETE",
         headers: this._headers,
-        credentials: 'include',
       })
         .then(this._getResponseData)
         .then((data) => {
@@ -98,13 +91,17 @@ class Api {
       body: JSON.stringify({
         avatar: avatar,
       }),
-      credentials: 'include',
     }).then(this._getResponseData);
   }
-}
+
+  setToken(token) {
+    this._headers.authorization = `${token}`;
+  }
+
+};
 
 export const api = new Api({
-  baseUrl: "http://localhost:3001",
+  baseUrl: "https://api.lackluster.students.nomoredomains.club",
   headers: {
     "Content-Type": "application/json",
   },

@@ -34,18 +34,24 @@ function App() {
   const [title, setTitle] = useState("");
   const history = useHistory();
 
+  const token = localStorage.getItem("jwt");
+  api.setToken(token);
+
   useEffect(() => {
-    checkAuthorization();
+    checkToken();
   }, []);
 
-  function checkAuthorization () {
-    const authCookie = document.cookie;
-    if(authCookie) {
+  function checkToken() {
+    const jwt = localStorage.getItem("jwt");
+    if(jwt) {
       auth
-        .getContent()
+        .getContent(jwt)
         .then((res) => {
           setCurrentUser(res);
           setUserEmail(res.email);
+        })
+        .then(() => {
+          history.push("/");
         })
         .then(() => {
           api
@@ -57,10 +63,6 @@ function App() {
               console.log(e);
             })
         })
-        .then(() => {
-          setLoggedIn(true);
-          history.push("/");
-        })
     } else {
       setLoggedIn(false);
     }
@@ -70,9 +72,10 @@ function App() {
     auth
       .authorize(email, password)
       .then((data) => {
-        if (data) {
+        if (data.token) {
           setLoggedIn(true);
-          checkAuthorization();
+          localStorage.setItem("jwt", data.token);
+          checkToken();
         }
       })
       .catch((e) => {
@@ -82,18 +85,6 @@ function App() {
         console.log(e);
       });
   };
-
-  const handleLogout = () => {
-    auth
-      .logOut()
-      .then(() => {
-        setLoggedIn(false);
-        history.push('/sign-in');
-      })
-      .catch((e) => {
-        console.log(e);
-      })
-  }
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true);
@@ -234,7 +225,6 @@ function App() {
     <AppContext.Provider
       value={{
         handleLogin: handleLogin,
-        handleLogout: handleLogout,
         loggedIn: loggedIn,
         handleRegistration: handleRegFormSubmit,
       }}
@@ -243,7 +233,6 @@ function App() {
         <div className="page">
           <Header 
             userEmail={userEmail}
-            handleLogout={handleLogout}
            />
           <Switch>
             <Route exact path="/">
